@@ -12,13 +12,13 @@ public:
 
         // Generate round keys
         std::array<std::array<uint8_t, 16>, 11> roundKeys = KeyExpansion(cipherKey);
-
+            /*
         for(auto key: roundKeys) {
             for(auto byte: key) {
                 printf("%02x ", (int)byte);
             }
             std::cout << std::endl;
-        }
+        }*/
 
         encrypt(plaintext, ciphertext, roundKeys);
     }
@@ -31,20 +31,15 @@ public:
 
         // 9 rounds of SubBytes, ShiftRows, MixColumns, and AddRoundKey
         for (int round = 1; round <= 9; ++round) {
-            /*SubBytes(state);
-            ShiftRows(state);
-            MixColumns(state);
-            AddRoundKey(state, roundKeys[round]);
-            */
             SubBytes(state);
-            ShiftRows(state);            
+            ShiftRows(state);
             MixColumns(state);
             AddRoundKey(state, roundKeys[round]);
         }
 
         // Final round (no MixColumns)
         SubBytes(state);
-        ShiftRows(state);        
+        ShiftRows(state);
         AddRoundKey(state, roundKeys[10]);
 
         ciphertext = state;
@@ -69,7 +64,7 @@ public:
         // 9 rounds of InvShiftRows, InvSubBytes, AddRoundKey, and InvMixColumns
         for (int round = 9; round >= 1; --round) {
             InvShiftRows(state);
-            InvSubBytes(state);            
+            InvSubBytes(state);
             AddRoundKey(state, roundKeys[round]);            
             InvMixColumns(state);
         }
@@ -246,24 +241,23 @@ private:
     static void InvShiftRows(std::array<uint8_t, 16>& state) {
         std::array<uint8_t, 16> temp = state;
 
-        // Row 0 does not change
         // Row 1
-        state[4+0] = temp[4+3];
-        state[4+1] = temp[4+0];
-        state[4+2] = temp[4+1];
-        state[4+3] = temp[4+2];
+        state[1] = temp[13];
+        state[5] = temp[1];
+        state[9] = temp[5];
+        state[13] = temp[9];
 
         // Row 2
-        state[8+0] = temp[8+3];
-        state[8+1] = temp[8+0];
-        state[8+2] = temp[8+1];
-        state[8+3] = temp[8+2];
+        state[2] = temp[10];
+        state[6] = temp[14];
+        state[10] = temp[2];
+        state[14] = temp[6];
 
         // Row 3
-        state[12+0] = temp[12+3];
-        state[12+1] = temp[12+0];
-        state[12+2] = temp[12+1];
-        state[12+3] = temp[12+2];
+        state[3] = temp[7];
+        state[7] = temp[11];
+        state[11] = temp[15];
+        state[15] = temp[3];
     }
 
 
@@ -296,16 +290,14 @@ private:
     static void ShiftRows(std::array<uint8_t, 16>& state) {
         std::array<uint8_t, 16> temp = state;
 
-        // Row 0, no shift
+        // Row 1, shift left by 1
+        state[1] = temp[5]; state[5] = temp[9]; state[9] = temp[13]; state[13] = temp[1];
 
-        // Row 1
-        state[4] = temp[5]; state[5] = temp[6]; state[6] = temp[7]; state[7] = temp[4];
+        // Row 2, shift left by 2
+        state[2] = temp[10]; state[6] = temp[14]; state[10] = temp[2]; state[14] = temp[6];
 
-        // Row 2
-        state[8+0] = temp[8+1]; state[8+1] = temp[8+2]; state[8+2] = temp[8+3]; state[8+3] = temp[8+0];
-
-        // Row 3
-        state[12+0] = temp[12+1]; state[12+1] = temp[12+2]; state[12+2] = temp[12+3]; state[12+3] = temp[12+0];
+        // Row 3, shift left by 3
+        state[3] = temp[15]; state[7] = temp[3]; state[11] = temp[7]; state[15] = temp[11];
     }
 
 
@@ -433,10 +425,11 @@ const uint8_t AES::invSBox[16][16] = {
 #include <fstream>
 
 int main() {
-    std::array<uint8_t, 16> plaintext = {0x32, 0x43, 0xf6, 0xa8, 0x88, 0x5a, 0x30, 0x8d, 0x31, 0x31, 0x98, 0xa2, 0xe0, 0x37, 0x07, 0x34};
-    std::array<uint8_t, 16> key = {0x2b, 0x7e, 0x15, 0x16, 0x28, 0xae, 0xd2, 0xa6, 0xab, 0xf7, 0x15, 0x88, 0x09, 0xcf, 0x4f, 0x3c};
-                                    //0x76, 0x2e, 0x71, 0x60, 0xf1, 0x83, 0x51, 0x51, 
-                                    //0x8a, 0x09, 0x53, 0x2a, 0x39, 0x09, 0x09, 0x7d};
+    std::array<uint8_t, 16> plaintext = //{0x00, 0x11, 0x22, 0x33, 0x44, 0x55,0x66, 0x77, 0x88, 0x99, 0xaa, 0xbb,0xcc, 0xdd, 0xee, 0xff};
+     {0x32, 0x43, 0xf6, 0xa8, 0x88, 0x5a, 0x30, 0x8d, 0x31, 0x31, 0x98, 0xa2, 0xe0, 0x37, 0x07, 0x34};
+    std::array<uint8_t, 16> key = //{0x00, 0x01, 0x02, 0x03, 0x04, 0x05,0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b,0x0c, 0x0d, 0x0e, 0x0f};
+     {0x2b, 0x7e, 0x15, 0x16, 0x28, 0xae, 0xd2, 0xa6, 0xab, 0xf7, 0x15, 0x88, 0x09, 0xcf, 0x4f, 0x3c};
+                                  
     std::array<uint8_t, 16> ciphertext;
     std::array<uint8_t, 16> decryptedtext;
 
