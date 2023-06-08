@@ -148,7 +148,7 @@ public:
                 temp = temp ^ (Rcon[i/4]);
             }
             
-            w[i] = w[i-4] ^ temp;            
+            w[i] = w[i-4] ^ temp;
         }
         
         for(int i = 0; i<44; ++i) {
@@ -358,16 +358,14 @@ This function performs multiplication in the Galois field GF(2^8)
 
   static std::array<uint8_t, 4> SubWord(std::array<uint8_t, 4> word) {
       for (auto& byte : word) {
-          byte = AES::sBox[byte / 16][byte % 16];
+          byte = sBox[byte / 16][byte % 16];
       }
       return word;
   }
 
   static uint32_t SubWord(uint32_t word) {
-      for (int i = 0; i < 4;i++) {
-          uint8_t byte = (word>>(i*4))&0xff;
-          word = (word&(~(0xff<<((3-i)*4)))) | (AES::sBox[byte / 16][byte % 16]<<((3-i)*4));
-      }
+      uint8_t byte[4] = {(uint8_t)(word>>24), (uint8_t)(word>>16), (uint8_t)(word>>8), (uint8_t)(word)};
+      word = (sBox[byte[0]>>4][byte[0] & 0xf]<<24)|(sBox[byte[1]>>4][byte[1] & 0xf]<<16)|(sBox[byte[2]>>4][byte[2] & 0xf]<<8)|(sBox[byte[3]>>4][byte[3] & 0xf]);
       return word;
   }
 
