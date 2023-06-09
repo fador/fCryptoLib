@@ -100,32 +100,7 @@ public:
         }
     }
 
-
-
-    /* This function multiplies two elements of GF(2^8) together.
-     * The GF(2^8) field is defined by the polynomial x^8 + x^4 + x^3 + x + 1.
-     * If the result of the multiplication exceeds 8 bits, then it is reduced modulo
-     * the irreducible polynomial defined above.
-     */
-    /*
-    static std::array<std::array<uint8_t, 16>, 11> KeyExpansion(const std::array<uint8_t, 16>& cipherKey) {
-        std::array<std::array<uint8_t, 16>, 11> roundKeys;
-        roundKeys[0] = cipherKey;
-
-        for (int i = 1; i <= 10; ++i) {
-            std::array<uint8_t, 4> temp = {roundKeys[i-1][13], roundKeys[i-1][14], roundKeys[i-1][15], roundKeys[i-1][12]};
-            temp = SubWord(RotWord(temp));
-            for (int j = 0; j < 4; ++j) {
-                temp[j] ^= AES::Rcon[i];
-                roundKeys[i][j] = roundKeys[i-1][j] ^ temp[j];
-            }
-            for (int j = 4; j < 16; ++j) {
-                roundKeys[i][j] = roundKeys[i-1][j] ^ roundKeys[i][j-4];
-            }
-        }
-        return roundKeys;
-    }*/
-
+    // The key expansion function, generates 11 round keys from the cipher key
     static std::array<std::array<uint8_t, 16>, 11> KeyExpansion(const std::array<uint8_t, 16>& cipherKey) {
         std::array<std::array<uint8_t, 16>, 11> roundKeys;
         roundKeys[0] = cipherKey;
@@ -155,69 +130,7 @@ public:
         
         return roundKeys;
     }
-/*
-    void KeyExpansion(uint8_t* inputKey, uint32_t* expandedKey) {
-        int i;
-        uint32_t temp;
-        const int Nk = 4;
-        const int Nb = 4;
-        const int Nr = 10;
 
-        // The first round key is the key itself.
-        for (i = 0; i < Nk; ++i)
-        {
-            expandedKey[i] = (inputKey[4 * i] << 24) | (inputKey[4 * i + 1] << 16) | (inputKey[4 * i + 2] << 8) | (inputKey[4 * i + 3]);
-        }
-
-        // All other round keys are found from the previous round keys.
-        for (; i < Nb * (Nr + 1); ++i)
-        {
-            temp = expandedKey[i - 1];
-            if (i % Nk == 0)
-            {
-                // This function rotates the 4 bytes in a word to the left once.
-                // [a0,a1,a2,a3] becomes [a1,a2,a3,a0]
-                temp = (temp << 8) | (temp >> 24);
-
-                // SubWord() is a function that takes a four-byte input word and 
-                // applies the S-box to each of the four bytes to produce an output word.
-                temp = SubWord(temp);
-
-                temp ^= Rcon[i/Nk];
-            }
-            expandedKey[i] = expandedKey[i - Nk] ^ temp;
-        }
-    }
-*/
-/*
-    static std::array<std::array<uint8_t, 16>, 11> KeyExpansion(const std::array<uint8_t, 16>& cipherKey) {
-        std::array<std::array<uint8_t, 16>, 11> expandedKeys;
-        std::array<uint8_t, 4> temp;
-
-        // The first round key is the key itself.
-        expandedKeys[0] = cipherKey;
-
-        // All other round keys are found from the previous round keys.
-        for (int i = 1; i <= 10; ++i) {
-            temp = expandedKeys[i-1];
-            // This function rotates the 4 bytes in a word to the left once.
-            // [a0,a1,a2,a3] becomes [a1,a2,a3,a0]
-            std::rotate(temp.begin(), temp.begin()+1, temp.end());
-
-            // SubWord() is a function that takes a four-byte input word and 
-            // applies the S-box to each of the four bytes to produce an output word.
-            temp = SubWord(temp);
-
-            temp[0] ^= Rcon[i];
-
-            for (int j = 0; j < 16; ++j) {
-                expandedKeys[i][j] = expandedKeys[i-1][j] ^ temp[j % 4];
-            }
-        }
-
-        return expandedKeys;
-    }
-*/
 private:
 
     static const std::array<uint32_t, 11> Rcon;
@@ -355,6 +268,7 @@ This function performs multiplication in the Galois field GF(2^8)
       return word;
   }
 
+  // SubWord for uint32_t, replaces each byte with the corresponding byte from the sBox
   static uint32_t SubWord(uint32_t word) {
       uint8_t byte[4] = {(uint8_t)(word>>24), (uint8_t)(word>>16), (uint8_t)(word>>8), (uint8_t)(word)};
       word = (sBox[byte[0]>>4][byte[0] & 0xf]<<24)|(sBox[byte[1]>>4][byte[1] & 0xf]<<16)|(sBox[byte[2]>>4][byte[2] & 0xf]<<8)|(sBox[byte[3]>>4][byte[3] & 0xf]);
