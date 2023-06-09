@@ -16,12 +16,12 @@ This implementation is created for educational purposes and should NOT be used f
 
 ## Building and Running the Project
 
-This project is a simple single-file C++ program. To build it, you'll need a C++ compiler that supports at least the C++14 standard.
+This project is a simple single-file C++ program. To build it, you'll need a C++ compiler that supports at least the C++11 standard.
 
 Here's how to build the project:
 
 ```bash
-g++ -std=c++14 -o aes128 aes128.cpp
+g++ -std=c++11 -o aes128 AES128_test.cpp
 ```
 
 Then, you can run it like so:
