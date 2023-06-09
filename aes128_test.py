@@ -25,6 +25,9 @@ key[:] = [0x2b, 0x7e, 0x15, 0x16, 0x28, 0xae, 0xd2, 0xa6, 0xab, 0xf7, 0x15, 0x88
 # Call the function
 aes_lib.Encrypt_interface(plaintext, ciphertext, key)
 
-hexstring = ''.join('%02X' % b for b in ciphertext)
-# ciphertext now contains the encrypted text
-print(hexstring)
+hexstring = ''.join('%02X ' % b for b in plaintext)
+print('Original text:   '+hexstring)
+
+hexstring = ''.join('%02X ' % b for b in ciphertext)
+# hexstring now contains the encrypted text
+print('Encrypted text:  '+hexstring)
