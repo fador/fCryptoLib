@@ -5,7 +5,7 @@
 #include <array>
 #include <cstdint>
 #include <algorithm>
-#include "fcryptolib.hpp"
+#include "../fcryptolib.hpp"
 
 extern "C" {
     void Encrypt_interface(const uint8_t* plaintext, uint8_t* ciphertext, const uint8_t* key) {
