@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+
+[project]
+name = "fcryptolib_fador"
+version = "0.1.0"
+description = "Python interface for AES-128 implemented in C++"
+authors = [
+    { name = "Marko Viitanen", email = "fador@iki.fi" },
+]
+license = "BSD-2-Clause"
+repository = "https://github.com/fador/fCryptoLib"
+readme = "README.md"
+
+[project.urls]
+
+
