@@ -2,7 +2,7 @@ from setuptools import setup, Extension
 import numpy
 
 # define the extension module
-aes_module = Extension('fcryptolib_fador', sources=['python_bind.cpp'],
+aes_module = Extension('fcryptolib_fador', sources=['./src/fcryptolib_fador/python_bind.cpp'],
                         include_dirs=[numpy.get_include()])
 
 # run the setup
