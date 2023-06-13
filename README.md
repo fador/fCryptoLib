@@ -32,6 +32,17 @@ Then, you can run it like so:
 
 This will run the program with a predefined plaintext and key, outputting the original text, the encrypted text, and the decrypted text.
 
+## Python
+
+The project includes an experimental python interface, which can be built and tested by going to `python/` and running:
+
+```bash
+python setup.py bdist_wheel
+pip install dist/fcryptolib_fador*.whl
+python tests/simple_test.py
+```
+
+
 ## License
 
 This project is licensed under permissive BSD 2-Clause License. - see the [LICENSE](LICENSE) file for details.
